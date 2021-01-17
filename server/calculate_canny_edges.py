@@ -2,13 +2,14 @@ import os
 import json
 import base64
 import numpy as np
-import cv2
 import boto3
+import cv2
 from uuid import uuid4
 
 s3_client = boto3.resource('s3')
 region = os.environ['AWS_REGION']
 s3_bucket_name = os.environ['S3_BUCKET_NAME']
+s3_bucket_url = os.environ['S3_BUCKET_URL']
 
 class Encoder(json.JSONEncoder):
     def default(self, obj):
@@ -38,7 +39,7 @@ def lambda_function(event, context):
     # Find edges in image 
     edges = cv2.Canny(img, minThreshold, maxThreshold, L2gradient=useL2Gradient)
     # Find contours in image
-    contours = cv2.findContours(edges, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(edges, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     # Cache length of retrieved contours
     number_of_contours = len(contours)
     # Initialize zeroed numpy array 
@@ -51,7 +52,7 @@ def lambda_function(event, context):
             polygon = cv2.approxPolyDP(contour, epsilon, False)
             points[i] = polygon.flatten().tolist()
         else:
-            points[i] = contour
+            points[i] = contour.flatten().tolist()
 
     # Convert points ndarray to a python list
     points_list = points.tolist()
@@ -63,11 +64,14 @@ def lambda_function(event, context):
     s3object.put(
         Body=(bytes(json.dumps({
             'points': points_list
-        }, cls=Encoder).encode('UTF-8')))
+        }).encode('UTF-8'))),
     )
 
     return json.dumps({
             'width': width,
             'height': height,
-            'points': file_name
-        }, cls=Encoder)
+            'contours': number_of_contours,
+            'minThreshold': minThreshold,
+            'maxThreshold': maxThreshold,
+            'url': s3_bucket_url + file_name
+        })

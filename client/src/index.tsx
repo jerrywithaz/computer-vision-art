@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
+import ImageProvider from './providers/ImageProvider';
 import reportWebVitals from './reportWebVitals';
+
+import 'antd/dist/antd.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ImageProvider>
+      <App />
+    </ImageProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

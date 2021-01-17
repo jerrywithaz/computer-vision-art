@@ -1,8 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
+import { Line } from "react-konva";
+import { Layout } from "antd";
+import { AppContainer, AppContent } from "./App.styled";
+import Canvas from "./components/Canvas";
+import GlobalStyles from "./components/GlobalStyles";
+import useCannyEdges from "./hooks/useCannyEdges";
+import { useImageProvider } from "./providers/ImageProvider";
+import randomInteger from "./utils/randomInteger";
+import Sidebar from "./features/Sidebar";
+import Header from "./features/Header";
 
-const url =
-  "https://bxjc2f8yt0.execute-api.us-east-2.amazonaws.com/calculate_canny_edges";
 function App() {
+  const getCannyEdges = useCannyEdges();
+  const [components, setComponents] = useState<JSX.Element[]>([]);
+  const { setURI, setDimensions, width, height, uri } = useImageProvider();
+
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
@@ -12,17 +24,32 @@ function App() {
       reader.onload = (e) => {
         const result = e.target?.result as string;
 
-        fetch(url, {
-          method: "POST",
-          body: JSON.stringify({
-            url: result,
-            minThreshold: 20,
-            maxThreshold: 100,
-            useL2Gradient: true,
-            useRigidLines: false,
-          }),
-        }).then((result) => {
-          console.log(result);
+        setURI(result);
+
+        getCannyEdges({
+          url: result,
+          minThreshold: 20,
+          maxThreshold: 50,
+          useL2Gradient: true,
+          useRigidLines: true,
+        }).then(({ points: lines, width, height }) => {
+          const temp_components = [];
+
+          for (let i = 0; i < lines.length; ++i) {
+            const points = lines[i];
+
+            const red = randomInteger(0, 255);
+            const green = randomInteger(0, 255);
+            const blue = randomInteger(0, 255);
+            const stroke = `rgb(${red}, ${green}, ${blue})`;
+
+            temp_components.push(
+              <Line key={i} points={points} stroke={stroke} strokeWidth={2} />
+            );
+          }
+
+          setComponents(temp_components);
+          setDimensions({ width, height });
         });
       };
 
@@ -31,15 +58,31 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <h1>Upload file</h1>
-      <input
-        type="file"
-        onChange={handleUpload}
-        name="image"
-        accept="image/*"
-      />
-    </div>
+    <AppContainer>
+      <GlobalStyles />
+      <Header />
+      <Layout>
+        <Sidebar />
+        <Layout>
+          <AppContent className="site-layout-background">
+            {!uri && (
+              <>
+                <h1>Upload file</h1>
+                <input
+                  type="file"
+                  onChange={handleUpload}
+                  name="image"
+                  accept="image/*"
+                />
+              </>
+            )}
+            <Canvas width={width} height={height}>
+              {components}
+            </Canvas>
+          </AppContent>
+        </Layout>
+      </Layout>
+    </AppContainer>
   );
 }
 
