@@ -1,8 +1,8 @@
 echo "Deleting previous deployment.zip..."
 rm deployment.zip
 
-echo "Adding python packages to zip..."
-cd packages
+echo "Adding python modules to zip..."
+cd python_modules
 zip -r ../deployment.zip ./
 
 echo "Adding python lambda to zip..."

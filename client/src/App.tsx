@@ -19,7 +19,7 @@ function App() {
             minThreshold: 20,
             maxThreshold: 100,
             useL2Gradient: true,
-            useRigidLines: true,
+            useRigidLines: false,
           }),
         }).then((result) => {
           console.log(result);

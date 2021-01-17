@@ -10,6 +10,8 @@ node_modules
 
 packages
 
+python_modules
+
 # production
 /build
 
