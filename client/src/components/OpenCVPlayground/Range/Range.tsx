@@ -20,7 +20,7 @@ const Range = ({
 }: RangeProps) => {
   const [internalValue, setInternalValue] = useState<number>(initialValue);
   return (
-    <Form.Item label={name} labelCol={{ span: 24 }}>
+    <Form.Item label={`${name} (${internalValue}/${max})`} labelCol={{ span: 24 }}>
       <Slider
         defaultValue={initialValue}
         value={internalValue}

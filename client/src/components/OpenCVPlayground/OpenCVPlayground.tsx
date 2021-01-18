@@ -72,7 +72,6 @@ const OpenCVPlayground: FunctionComponent<OpenCvPlaygroundProps> = ({
       getBase64(info.file.originFileObj, (url) => {
         if (typeof url === "string") {
           setURI(url);
-          updateImage(url);
         } else {
           message.error("You can only upload images.");
         }

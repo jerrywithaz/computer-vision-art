@@ -18,7 +18,7 @@ function App() {
         maxThreshold: 100,
         useL2Gradient: true,
         useRigidLines: true,
-        ...rest
+        ...rest,
       });
       const temp_components = [];
 
@@ -50,16 +50,16 @@ function App() {
             type: "range",
             key: "minThreshold",
             initialValue: 50,
-            min: 0, 
-            max: 100
+            min: 0,
+            max: 100,
           },
           {
             name: "Max Threshold",
             type: "range",
             key: "maxThreshold",
             initialValue: 100,
-            min: 0, 
-            max: 200
+            min: 0,
+            max: 200,
           },
           {
             name: "Use L2 Gradient",
