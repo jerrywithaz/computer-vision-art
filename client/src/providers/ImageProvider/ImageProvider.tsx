@@ -14,6 +14,7 @@ type ImageProviderContextProps = {
     uri: string | null;
     width: number;
     height: number;
+    removeImage: VoidFunction;
 };
 
 const ImageProviderContext = React.createContext<ImageProviderContextProps | undefined>(undefined);
@@ -24,6 +25,11 @@ const ImageProvider: FunctionComponent = ({ children }) => {
     const [stageRef, setStageRef] = useState<any>(null);
     const { width, height } = dimensions;
     
+    const removeImage = () => {
+        setURI(null);
+        setDimensions({ width: 0, height: 0 });
+    }
+
     const downloadImage = () => {
         if (stageRef && uri && width && height) {
     
@@ -58,7 +64,8 @@ const ImageProvider: FunctionComponent = ({ children }) => {
         setDimensions,
         downloadImage,
         width,
-        height
+        height,
+        removeImage,
     };
 
     return (

@@ -13,5 +13,6 @@ export const HeaderLogo = styled(Typography.Title)`
     && {
         color: #ffffff;
         margin: 0px;
+        font-size: 24px;
     }
 `;
