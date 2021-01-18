@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useContext, useState } from 'react';
+import React, { FunctionComponent, useContext, useEffect, useState } from 'react';
 import downloadURI from '../../utils/downloadURI';
 
 type Dimension = {
@@ -15,12 +15,14 @@ type ImageProviderContextProps = {
     width: number;
     height: number;
     removeImage: VoidFunction;
+    image: HTMLImageElement | null;
 };
 
 const ImageProviderContext = React.createContext<ImageProviderContextProps | undefined>(undefined);
 
 const ImageProvider: FunctionComponent = ({ children }) => {
     const [uri, setURI] = useState<string | null>(null);
+    const [image, setImage] = useState<HTMLImageElement | null>(null);
     const [dimensions, setDimensions] = useState<Dimension>({ width: 0, height: 0 });
     const [stageRef, setStageRef] = useState<any>(null);
     const { width, height } = dimensions;
@@ -66,7 +68,18 @@ const ImageProvider: FunctionComponent = ({ children }) => {
         width,
         height,
         removeImage,
+        image
     };
+
+    useEffect(() => {
+        if (uri) {
+            const newImage = new Image();
+            newImage.onload = () => {
+                setImage(newImage);
+            };
+            newImage.src = uri;
+        }
+    }, [uri]);
 
     return (
         <ImageProviderContext.Provider value={value}>

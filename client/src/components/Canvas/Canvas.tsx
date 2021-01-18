@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useCallback, useState } from "react";
 import { Group, Layer, Stage, Rect } from "react-konva";
+import useOnPropUpdated from "../../hooks/useOnPropUpdated";
 import useZoomAndPan from "../../hooks/useZoomAndPan";
 import { useImageProvider } from "../../providers/ImageProvider";
 import { CanvasContainer } from "./Canvas.styled";
@@ -16,8 +17,8 @@ const Canvas: FunctionComponent<CanvasProps> = ({
 }) => {
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const [containerHeight, setContainerHeight] = useState<number>(0);
-  const { setStageRef } = useImageProvider();
-  const { scale, x, y, setZoomRef } = useZoomAndPan();
+  const { setStageRef, image } = useImageProvider();
+  const { scale, x, y, setZoomRef, fitToContainer } = useZoomAndPan();
 
   const handleRef = useCallback(
     (el: HTMLDivElement | null) => {
@@ -29,6 +30,18 @@ const Canvas: FunctionComponent<CanvasProps> = ({
     },
     [setZoomRef]
   );
+
+  useOnPropUpdated(image, (_, currentImage) => {
+    if (currentImage) {
+        fitToContainer(
+            containerWidth,
+            containerHeight,
+            true,
+            currentImage.naturalWidth,
+            currentImage.naturalHeight,
+        );
+    }
+  });
 
   return (
     <CanvasContainer ref={handleRef}>

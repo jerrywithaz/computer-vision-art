@@ -1,4 +1,4 @@
-import { Layout, Typography } from "antd";
+import { Layout, Typography, Row } from "antd";
 import styled from 'styled-components';
 
 const { Header } = Layout;
@@ -16,3 +16,8 @@ export const HeaderLogo = styled(Typography.Title)`
         font-size: 24px;
     }
 `;
+
+export const HeaderRow = styled(Row)`
+    width: 100%;
+`;
+

@@ -16,7 +16,12 @@ const Sidebar: FunctionComponent<SideBarProps> = ({
   values,
 }) => {
   return (
-    <SidebarContainer width={300} theme="light">
+    <SidebarContainer
+      width={300}
+      theme="light"
+      breakpoint="md"
+      collapsedWidth="0"
+    >
       {tools.map((tool) => {
         if (tool.type === "toggle") {
           return (
